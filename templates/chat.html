@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block page_content %}
+<div class="page-header">
+    <h1>Chat with the Bot, {{ name }}!</h1>
+</div>
+
+<div id="chat-window" style="border:1px solid #ccc; padding:10px; height:300px; overflow-y:auto; margin-bottom:10px;"></div>
+
+<div class="input-group">
+    <input type="text" id="message-input" class="form-control" placeholder="Type a message...">
+    <span class="input-group-btn">
+        <button class="btn btn-primary" id="send-btn">Send</button>
+    </span>
+</div>
+
+<br>
+<a href="{{ url_for('logout') }}" class="btn btn-default">Logout</a>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script>
+document.getElementById('send-btn').addEventListener('click', sendMessage);
+document.getElementById('message-input').addEventListener('keypress', function (e) {
+    if (e.key === 'Enter') sendMessage();
+});
+
+function sendMessage() {
+    var input = document.getElementById('message-input');
+    var message = input.value.trim();
+    if (!message) return;
+
+    var chatWindow = document.getElementById('chat-window');
+    chatWindow.innerHTML += '<p><strong>You:</strong> ' + message + '</p>';
+    input.value = '';
+
+    fetch('{{ url_for("chat") }}', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: message })
+    })
+    .then(response => response.json())
+    .then(data => {
+        chatWindow.innerHTML += '<p><strong>Bot:</strong> ' + data.reply + '</p>';
+        chatWindow.scrollTop = chatWindow.scrollHeight;
+    });
+}
+</script>
+{% endblock %}

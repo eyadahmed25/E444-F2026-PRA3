@@ -3,12 +3,11 @@
 
 {% block page_content %}
 <div class="page-header">
-    <h1>Hello, {% if name %}{{ name }}{% else %}Stranger{% endif %}! Welcome to PRA3 Docker!</h1>
-    {% if email %}
-    <p>Your UofT email is {{ email }}</p>
-    {% elif email_warning %}
-    <p>{{ email_warning }}</p>
+    <h1>Hello, Stranger! Welcome to PRA3 Docker!</h1>
+    {% if email_warning %}
+    <p style="color:red;">{{ email_warning }}</p>
     {% endif %}
 </div>
 {{ wtf.quick_form(form) }}
 {% endblock %}
+
